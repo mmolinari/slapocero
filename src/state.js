@@ -81,8 +81,8 @@ export class StateMachine extends EventEmitter {
             return false;
         }
         
-        // Check if transition is valid
-        if (!this.canTransition(this.currentState, newState)) {
+        // Check if transition is valid (skip check if forcing to same state)
+        if (!data.force && !this.canTransition(this.currentState, newState)) {
             console.warn(`Invalid transition from ${this.currentState} to ${newState}`);
             return false;
         }

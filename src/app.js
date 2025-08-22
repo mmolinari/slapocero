@@ -40,7 +40,7 @@ class SlapocerobankGame {
 
         // Configuration (from project brief)
         this.config = {
-            idleSwapInterval: { min: 3000, max: 7000 }, // 3-7 seconds
+            idleSwapInterval: { min: 3000, max: 5000 }, // 3-5 seconds
             hitDuration: { min: 1800, max: 3200 }, // 1.8-3.2 seconds
             debounceDelay: 100, // prevent rapid clicking during hit state
             grunts: {
@@ -253,7 +253,7 @@ class SlapocerobankGame {
 
         gameState.on('enter:idle', () => {
             this.showIdleFrame();
-            this.scheduleNextIdleSwap();
+            this.scheduleNextIdleSwap(true); // Start immediately when entering idle
         });
 
 
@@ -384,12 +384,12 @@ class SlapocerobankGame {
     /**
      * Schedule next idle animation swap
      */
-    scheduleNextIdleSwap() {
+    scheduleNextIdleSwap(immediate = false) {
         if (this.idleTimer) {
             clearTimeout(this.idleTimer);
         }
 
-        const delay = randInt(this.config.idleSwapInterval.min, this.config.idleSwapInterval.max);
+        const delay = immediate ? 0 : randInt(this.config.idleSwapInterval.min, this.config.idleSwapInterval.max);
 
         this.idleTimer = setTimeout(() => {
             if (gameState.isState(State.IDLE)) {

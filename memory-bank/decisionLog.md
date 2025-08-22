@@ -36,3 +36,13 @@ This file records architectural and implementation decisions using a list format
   - Removed separate event listener for IDLE_ANIMATE state
   - Updated accessibility status text mapping
 - **Benefits**: Cleaner state machine with only essential states (IDLE, HIT), easier maintenance, same functionality preserved
+
+[2025-08-22 23:53:13] - Fixed idle animation startup issue
+- **Problem**: Idle images only started changing after the first hit, not immediately on game load
+- **Root Cause**: State machine blocked IDLE → IDLE transitions, so `'enter:idle'` event never fired on startup
+- **Solution**: Modified state machine to bypass transition validation when using `force: true`
+- **Changes**:
+  - Modified `setState()` in `src/state.js` to skip `canTransition()` check when `data.force` is true
+  - This allows `goToIdle({ force: true })` to properly trigger `'enter:idle'` event even when already in IDLE state
+  - Reverted unnecessary complexity in `src/app.js`
+- **Result**: `'enter:idle'` event now fires on startup, immediately starting idle animation cycle
