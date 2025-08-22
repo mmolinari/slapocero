@@ -1,0 +1,58 @@
+{
+  "name": "Slapocero",
+  "short_name": "Slapocero",
+  "description": "A playful warthog tapping game",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3e8d2",
+  "theme_color": "#7a4b2a",
+  "categories": ["games", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/assets/icons/icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/img/slapocero_idle_01.png",
+      "sizes": "400x267",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Slapocero gameplay"
+    }
+  ],
+  "scope": "/",
+  "id": "slapocero-game",
+  "prefer_related_applications": false,
+  "features": [
+    "offline-playable",
+    "touch-interactions",
+    "audio-feedback"
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Slapocero",
+      "short_name": "Play",
+      "description": "Start playing the warthog game",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/assets/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

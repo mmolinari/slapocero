@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slapocero</title>
+    <meta name="description" content="A playful warthog tapping game">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="pwa/manifest.json">
+    <meta name="theme-color" content="#7a4b2a">
+    
+    <!-- PWA iOS meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Slapocero">
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="assets/img/slapocero_idle_01.png" as="image">
+    <link rel="preload" href="assets/img/slapocero_idle_02.png" as="image">
+    <link rel="preload" href="assets/img/slapocero_idle_03.png" as="image">
+</head>
+<body>
+    <header>
+        <h1>Slapocero</h1>
+        <div class="controls">
+            <button id="muteToggle" class="mute-btn" aria-label="Toggle sound">
+                <span class="icon-sound">🔊</span>
+                <span class="icon-mute" style="display: none;">🔇</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="game-container">
+            <div class="warthog-container" role="button" tabindex="0" aria-label="Tap the warthog">
+                <img id="warthogSprite" 
+                     src="assets/img/slapocero_idle_01.png" 
+                     alt="Warthog character" 
+                     class="warthog-sprite">
+            </div>
+            
+            <!-- Accessibility feedback -->
+            <div id="gameStatus" 
+                 aria-live="polite" 
+                 aria-atomic="true" 
+                 class="sr-only">
+                Warthog is idle
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="stats" id="gameStats">
+            <span>Hits: <span id="hitCounter">0</span></span>
+        </div>
+    </footer>
+
+    <!-- Load ES modules -->
+    <script type="module" src="src/app.js"></script>
+    
+    <!-- Service Worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('pwa/service-worker.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
