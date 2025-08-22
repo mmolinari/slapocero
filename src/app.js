@@ -224,7 +224,14 @@ class SlapocerobankGame {
                 grunt_hit_01: 'assets/audio/grunt_hit_01',
                 grunt_hit_02: 'assets/audio/grunt_hit_02',
                 grunt_hit_03: 'assets/audio/grunt_hit_03',
-                slap_ciaf_01: 'assets/audio/slap_ciaf_01'
+                slap_ciaf_01: 'assets/audio/slap_ciaf_01',
+                slap_ciaf_02: 'assets/audio/slap_ciaf_02',
+                slap_ciaf_03: 'assets/audio/slap_ciaf_03',
+                slap_ciaf_04: 'assets/audio/slap_ciaf_04',
+                slap_ciaf_05: 'assets/audio/slap_ciaf_05',
+                slap_ciaf_06: 'assets/audio/slap_ciaf_06',
+                slap_ciaf_07: 'assets/audio/slap_ciaf_07',
+                slap_ciaf_08: 'assets/audio/slap_ciaf_08'
             };
 
             await audioManager.loadAudioMap(audioMap);
@@ -433,8 +440,8 @@ class SlapocerobankGame {
      */
     async playHitSounds() {
         try {
-            // Play slap sound
-            audioManager.play('slap_ciaf_01', { volume: 0.9 });
+            // Play random slap sound
+            audioManager.random('slap_ciaf', { volume: 0.9 });
 
             // Play hit grunt with slight delay
             setTimeout(() => {
