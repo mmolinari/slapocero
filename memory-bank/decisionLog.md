@@ -1,0 +1,29 @@
+# Decision Log
+
+This file records architectural and implementation decisions using a list format.
+
+## Decision
+
+* **Technology Stack Selection**: Vanilla JavaScript with ES modules, no frameworks or bundlers
+* **State Management Approach**: Finite state machine with simple state transitions (idle → idle-animate → hit → idle)
+* **Audio System Architecture**: Web Audio API as primary with `<audio>` element fallback for compatibility
+* **Asset Management Strategy**: Preload all images and audio files on app initialization for optimal performance
+* **PWA Implementation**: Cache-first strategy for assets, network-first for HTML/JS files
+
+## Rationale 
+
+* **Vanilla JS Choice**: Ensures minimal dependencies, faster loading, and easier maintenance for a simple interactive app
+* **State Machine Pattern**: Provides clear, predictable behavior for warthog character interactions and animations
+* **Web Audio API Priority**: Offers better control over audio timing, volume, and effects crucial for responsive gameplay
+* **Asset Preloading**: Eliminates loading delays during user interactions, ensuring immediate visual and audio feedback
+* **PWA Cache Strategy**: Balances offline functionality with update capability for evolving features
+
+## Implementation Details
+
+* **Module Structure**: Separate concerns into state.js, audio.js, utils.js, and main app.js
+* **Image Handling**: DOM-based `<img>` element swapping rather than canvas for simplicity
+* **Timing System**: `requestAnimationFrame` for smooth transitions, `setTimeout` for state duration management
+* **Audio Format Support**: Multiple formats (.mp3, .ogg) for cross-browser compatibility
+* **Performance Optimization**: Minimize DOM reflows, use efficient event handling with debouncing
+
+2025-08-22 22:08:44 - Initial architectural decisions documented based on project brief analysis
