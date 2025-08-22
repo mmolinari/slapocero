@@ -27,3 +27,12 @@ This file records architectural and implementation decisions using a list format
 * **Performance Optimization**: Minimize DOM reflows, use efficient event handling with debouncing
 
 2025-08-22 22:08:44 - Initial architectural decisions documented based on project brief analysis
+
+[2025-08-22 23:28:27] - Removed IDLE_ANIMATE state from finite state machine
+- **Rationale**: Simplified state management by handling random sprite changes directly within IDLE state
+- **Changes**: 
+  - Eliminated IDLE_ANIMATE state from State enum and transition logic
+  - Modified scheduleNextIdleSwap() to handle sprite changes and grunt sounds within IDLE state
+  - Removed separate event listener for IDLE_ANIMATE state
+  - Updated accessibility status text mapping
+- **Benefits**: Cleaner state machine with only essential states (IDLE, HIT), easier maintenance, same functionality preserved

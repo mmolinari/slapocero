@@ -8,7 +8,6 @@ import { EventEmitter } from './utils.js';
 // Define possible states
 export const State = {
     IDLE: 'idle',
-    IDLE_ANIMATE: 'idle-animate', 
     HIT: 'hit'
 };
 
@@ -62,8 +61,7 @@ export class StateMachine extends EventEmitter {
     canTransition(fromState, toState) {
         // Define valid state transitions based on project brief
         const validTransitions = {
-            [State.IDLE]: [State.IDLE_ANIMATE, State.HIT],
-            [State.IDLE_ANIMATE]: [State.IDLE, State.HIT],
+            [State.IDLE]: [State.HIT],
             [State.HIT]: [State.IDLE]
         };
         
@@ -157,11 +155,11 @@ export class StateMachine extends EventEmitter {
     }
     
     /**
-     * Check if in idle state (either IDLE or IDLE_ANIMATE)
-     * @returns {boolean} True if in any idle state
+     * Check if in idle state
+     * @returns {boolean} True if in idle state
      */
     isIdle() {
-        return this.isAnyState([State.IDLE, State.IDLE_ANIMATE]);
+        return this.isState(State.IDLE);
     }
     
     /**
@@ -182,15 +180,6 @@ export class StateMachine extends EventEmitter {
         }
     }
     
-    /**
-     * Transition to idle-animate state (if valid)
-     * @param {Object} data - Optional data
-     */
-    goToIdleAnimate(data = {}) {
-        if (this.isState(State.IDLE)) {
-            this.setState(State.IDLE_ANIMATE, data);
-        }
-    }
     
     /**
      * Get transition history
