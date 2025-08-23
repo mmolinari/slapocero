@@ -140,13 +140,13 @@ class SlapocerobankGame {
 
         // Preload idle images (1-6)
         for (let i = 1; i <= 6; i++) {
-            const path = `assets/img/slapocero_idle_${i.toString().padStart(2, '0')}.png`;
+            const path = `assets/img/slapocero_idle_${i.toString().padStart(2, '0')}.jpeg`;
             imagePromises.push(this.loadImage(path));
         }
 
         // Preload hit images (7-12)
         for (let i = 7; i <= 12; i++) {
-            const path = `assets/img/slapocero_hit_${i.toString().padStart(2, '0')}.png`;
+            const path = `assets/img/slapocero_hit_${i.toString().padStart(2, '0')}.jpeg`;
             imagePromises.push(this.loadImage(path));
         }
 

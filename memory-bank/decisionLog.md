@@ -46,3 +46,10 @@ This file records architectural and implementation decisions using a list format
   - This allows `goToIdle({ force: true })` to properly trigger `'enter:idle'` event even when already in IDLE state
   - Reverted unnecessary complexity in `src/app.js`
 - **Result**: `'enter:idle'` event now fires on startup, immediately starting idle animation cycle
+
+[2025-08-23 07:57:50] - Image format change from PNG to JPEG
+- **Change**: Updated asset loading paths from `.png` to `.jpeg` extensions
+- **Files Modified**: `src/app.js` lines 143 and 149
+- **Rationale**: User converted image assets from PNG to JPEG format for better compression/file size
+- **Impact**: All 12 warthog sprites now load as JPEG files instead of PNG files
+- **Old PNG files**: Moved to archive/img/ directory for backup
