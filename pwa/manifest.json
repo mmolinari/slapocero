@@ -2,7 +2,7 @@
   "name": "Slapocero",
   "short_name": "Slapocero",
   "description": "A playful warthog tapping game",
-  "start_url": "/",
+  "start_url": "/slapocero/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f3e8d2",
@@ -12,13 +12,13 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/assets/icons/icon-192.png",
+      "src": "/slapocero/assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/assets/icons/icon-512.png", 
+      "src": "/slapocero/assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -26,14 +26,14 @@
   ],
   "screenshots": [
     {
-      "src": "/assets/img/slapocero_idle_01.png",
+      "src": "/slapocero/assets/img/slapocero_idle_01.jpeg",
       "sizes": "400x267",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Slapocero gameplay"
     }
   ],
-  "scope": "/",
+  "scope": "/slapocero/",
   "id": "slapocero-game",
   "prefer_related_applications": false,
   "features": [
@@ -46,10 +46,10 @@
       "name": "Play Slapocero",
       "short_name": "Play",
       "description": "Start playing the warthog game",
-      "url": "/",
+      "url": "/slapocero/",
       "icons": [
         {
-          "src": "/assets/icons/icon-192.png",
+          "src": "/slapocero/assets/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]

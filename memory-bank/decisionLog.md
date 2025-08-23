@@ -53,3 +53,14 @@ This file records architectural and implementation decisions using a list format
 - **Rationale**: User converted image assets from PNG to JPEG format for better compression/file size
 - **Impact**: All 12 warthog sprites now load as JPEG files instead of PNG files
 - **Old PNG files**: Moved to archive/img/ directory for backup
+
+[2025-08-23 17:42:23] - Fixed iOS PWA 404 issue for GitHub Pages deployment
+- **Problem**: PWA failed to launch from iOS home screen with 404 error when published at https://mmolinari.github.io/slapocero
+- **Root Cause**: Manifest and service worker used root paths (/) instead of GitHub Pages subpath (/slapocero/)
+- **Solution**: Updated all absolute paths to include /slapocero/ prefix
+- **Files Modified**:
+  - `pwa/manifest.json`: Updated start_url, scope, icon paths, screenshot path, and shortcut URL
+  - `pwa/service-worker.js`: Updated CACHE_ASSETS array and path detection functions
+  - `index.html`: Updated preload links and main image src from PNG to JPEG format
+- **Additional Fix**: Corrected image format references from .png to .jpeg throughout all files
+- **Result**: PWA will now properly launch from iOS home screen at correct GitHub Pages URL

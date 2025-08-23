@@ -8,42 +8,42 @@ const CACHE_VERSION = 1;
 
 // Assets to cache on install
 const CACHE_ASSETS = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/src/app.js',
-  '/src/utils.js',
-  '/src/state.js',
-  '/src/audio.js',
-  '/pwa/manifest.json',
+  '/slapocero/',
+  '/slapocero/index.html',
+  '/slapocero/styles.css',
+  '/slapocero/src/app.js',
+  '/slapocero/src/utils.js',
+  '/slapocero/src/state.js',
+  '/slapocero/src/audio.js',
+  '/slapocero/pwa/manifest.json',
   // Images
-  '/assets/img/slapocero_idle_01.png',
-  '/assets/img/slapocero_idle_02.png',
-  '/assets/img/slapocero_idle_03.png',
-  '/assets/img/slapocero_idle_05.png',
-  '/assets/img/slapocero_idle_06.png',
-  '/assets/img/slapocero_hit_07.png',
-  '/assets/img/slapocero_hit_08.png',
-  '/assets/img/slapocero_hit_09.png',
-  '/assets/img/slapocero_hit_10.png',
-  '/assets/img/slapocero_hit_11.png',
-  '/assets/img/slapocero_hit_12.png',
+  '/slapocero/assets/img/slapocero_idle_01.jpeg',
+  '/slapocero/assets/img/slapocero_idle_02.jpeg',
+  '/slapocero/assets/img/slapocero_idle_03.jpeg',
+  '/slapocero/assets/img/slapocero_idle_04.jpeg',
+  '/slapocero/assets/img/slapocero_idle_05.jpeg',
+  '/slapocero/assets/img/slapocero_idle_06.jpeg',
+  '/slapocero/assets/img/slapocero_hit_07.jpeg',
+  '/slapocero/assets/img/slapocero_hit_08.jpeg',
+  '/slapocero/assets/img/slapocero_hit_09.jpeg',
+  '/slapocero/assets/img/slapocero_hit_10.jpeg',
+  '/slapocero/assets/img/slapocero_hit_11.jpeg',
+  '/slapocero/assets/img/slapocero_hit_12.jpeg',
   // Audio files (mp3 format as primary)
-  '/assets/audio/grunt_idle_01.mp3',
-  '/assets/audio/grunt_idle_02.mp3',
-  '/assets/audio/grunt_idle_03.mp3',
-  '/assets/audio/grunt_hit_01.mp3',
-  '/assets/audio/grunt_hit_02.mp3',
-  '/assets/audio/grunt_hit_03.mp3',
-  '/assets/audio/slap_ciaf_01.mp3',
-  // Audio files (ogg format as fallback)
-  '/assets/audio/grunt_idle_01.ogg',
-  '/assets/audio/grunt_idle_02.ogg',
-  '/assets/audio/grunt_idle_03.ogg',
-  '/assets/audio/grunt_hit_01.ogg',
-  '/assets/audio/grunt_hit_02.ogg',
-  '/assets/audio/grunt_hit_03.ogg',
-  '/assets/audio/slap_ciaf_01.ogg'
+  '/slapocero/assets/audio/grunt_idle_01.mp3',
+  '/slapocero/assets/audio/grunt_idle_02.mp3',
+  '/slapocero/assets/audio/grunt_idle_03.mp3',
+  '/slapocero/assets/audio/grunt_hit_01.mp3',
+  '/slapocero/assets/audio/grunt_hit_02.mp3',
+  '/slapocero/assets/audio/grunt_hit_03.mp3',
+  '/slapocero/assets/audio/slap_ciaf_01.mp3',
+  '/slapocero/assets/audio/slap_ciaf_02.mp3',
+  '/slapocero/assets/audio/slap_ciaf_03.mp3',
+  '/slapocero/assets/audio/slap_ciaf_04.mp3',
+  '/slapocero/assets/audio/slap_ciaf_05.mp3',
+  '/slapocero/assets/audio/slap_ciaf_06.mp3',
+  '/slapocero/assets/audio/slap_ciaf_07.mp3',
+  '/slapocero/assets/audio/slap_ciaf_08.mp3'
 ];
 
 // Install event - cache assets
@@ -225,7 +225,7 @@ async function networkFirst(request, timeout = 3000) {
  */
 function isAssetRequest(pathname) {
   return (
-    pathname.startsWith('/assets/') ||
+    pathname.startsWith('/slapocero/assets/') ||
     pathname.endsWith('.css') ||
     pathname.endsWith('.png') ||
     pathname.endsWith('.jpg') ||
@@ -247,10 +247,11 @@ function isAssetRequest(pathname) {
  */
 function isDocumentOrScript(pathname) {
   return (
-    pathname === '/' ||
+    pathname === '/slapocero/' ||
+    pathname === '/slapocero/index.html' ||
     pathname.endsWith('.html') ||
     pathname.endsWith('.js') ||
-    pathname.startsWith('/src/')
+    pathname.startsWith('/slapocero/src/')
   );
 }
 
