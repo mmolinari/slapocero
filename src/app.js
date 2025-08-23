@@ -126,8 +126,8 @@ class SlapocerobankGame {
         // Preload images
         await this.preloadImages();
 
-        // Note: Audio loading will happen on first user interaction
-        // due to browser autoplay policies
+        // Preload audio files (silently, without playing)
+        await this.preloadAudio();
 
         console.log('Assets preloaded successfully');
     }
@@ -182,6 +182,62 @@ class SlapocerobankGame {
             img.onerror = () => reject(new Error(`Failed to load image: ${path}`));
             img.src = path;
         });
+    }
+
+    /**
+     * Preload audio files without initializing the audio context
+     * This ensures audio files are cached and ready for playback
+     */
+    async preloadAudio() {
+        try {
+            console.log('Preloading audio assets...');
+            
+            // Define all audio assets that should be preloaded
+            const audioAssets = [
+                'assets/audio/grunt_idle_01.mp3',
+                'assets/audio/grunt_idle_02.mp3',
+                'assets/audio/grunt_idle_03.mp3',
+                'assets/audio/grunt_hit_01.mp3',
+                'assets/audio/grunt_hit_02.mp3',
+                'assets/audio/grunt_hit_03.mp3',
+                'assets/audio/slap_ciaf_01.mp3',
+                'assets/audio/slap_ciaf_02.mp3',
+                'assets/audio/slap_ciaf_03.mp3',
+                'assets/audio/slap_ciaf_04.mp3',
+                'assets/audio/slap_ciaf_05.mp3',
+                'assets/audio/slap_ciaf_06.mp3',
+                'assets/audio/slap_ciaf_07.mp3',
+                'assets/audio/slap_ciaf_08.mp3'
+            ];
+
+            // Use fetch to preload audio files (they'll be cached by browser)
+            const preloadPromises = audioAssets.map(async (audioPath) => {
+                try {
+                    const response = await fetch(audioPath);
+                    if (response.ok) {
+                        // Consume the response to ensure it's cached
+                        await response.blob();
+                        console.log(`Preloaded audio: ${audioPath}`);
+                        return { success: true, path: audioPath };
+                    } else {
+                        console.warn(`Failed to preload audio: ${audioPath} (${response.status})`);
+                        return { success: false, path: audioPath, error: `HTTP ${response.status}` };
+                    }
+                } catch (error) {
+                    console.warn(`Failed to preload audio: ${audioPath}`, error);
+                    return { success: false, path: audioPath, error: error.message };
+                }
+            });
+
+            const results = await Promise.allSettled(preloadPromises);
+            const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+            const total = audioAssets.length;
+            
+            console.log(`Audio preloading complete: ${successful}/${total} files cached`);
+            
+        } catch (error) {
+            console.warn('Audio preloading failed:', error);
+        }
     }
 
     /**
