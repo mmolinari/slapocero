@@ -97,3 +97,19 @@ This file records architectural and implementation decisions using a list format
   - Proper fade-out transition when loading completes
 - **Testing Results**: Successfully tested with local server, all 26 assets load progressively with accurate progress reporting
 - **Compatibility**: Responsive design works on mobile and desktop, supports dark mode and reduced motion preferences
+
+[2025-08-24 18:27:00] - iOS Haptic Feedback Enhancement Implementation Completed
+- **Feature**: Added comprehensive iOS 18+ haptic feedback support using checkbox switch workaround
+- **Problem Solved**: Safari iOS doesn't support standard Vibration API, limiting haptic feedback in PWA
+- **Solution**: Multi-tier haptic system with iOS checkbox switch workaround fallback
+- **Technical Implementation**:
+  - Enhanced `triggerHaptic()` function in `src/utils.js` with 3-tier fallback system
+  - Tier 1: Standard `navigator.vibrate()` API (existing Android/browser support)
+  - Tier 2: iOS 18+ checkbox switch workaround (Safari 17.4+ feature detection)
+  - Tier 3: Graceful degradation (no haptic feedback)
+- **iOS Workaround Method**: Creates temporary hidden `<label>` with `<input type="checkbox" switch>`, programmatically clicks it to trigger iOS native haptic feedback, then immediately cleans up DOM elements
+- **Pattern Support**: Basic haptic (single), confirm pattern (double with delay), error pattern (triple with delays)
+- **Device Detection**: iOS Safari user agent detection + feature detection for switch input support
+- **Backward Compatibility**: Existing `triggerHaptic([10])` calls work unchanged with enhanced functionality
+- **Testing Results**: Successfully tested with local server, haptic feedback integrates seamlessly with warthog slap interactions
+- **Performance**: Zero dependencies, minimal DOM manipulation, silent error handling, proper resource cleanup
