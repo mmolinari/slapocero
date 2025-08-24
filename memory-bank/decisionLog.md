@@ -64,3 +64,17 @@ This file records architectural and implementation decisions using a list format
   - `index.html`: Updated preload links and main image src from PNG to JPEG format
 - **Additional Fix**: Corrected image format references from .png to .jpeg throughout all files
 - **Result**: PWA will now properly launch from iOS home screen at correct GitHub Pages URL
+
+[2025-08-23 22:27:24] - PWA icons created for mobile app installation
+- **Problem**: PWA manifest referenced missing icon files (icon-192.png, icon-512.png)
+- **Solution**: Created PWA icons using existing character sprite as base image
+- **Base Image**: Used slapocero_idle_01.jpeg (1024x1536) as source material
+- **Process**: 
+  - Installed ImageMagick via Homebrew for image processing
+  - Created 192x192px PNG icon with centered crop and theme background (#f3e8d2)
+  - Created 512x512px PNG icon with same processing approach
+- **Technical Details**:
+  - Used `magick` command with `-resize NxN^` (fill), `-gravity center` (crop center), `-extent NxN` (canvas size)
+  - Applied app theme background color for maskable icon compliance
+- **Files Created**: assets/icons/icon-192.png (46KB), assets/icons/icon-512.png (319KB)
+- **Impact**: PWA can now be properly installed on mobile devices with recognizable warthog character icon
