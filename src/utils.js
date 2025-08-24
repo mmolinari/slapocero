@@ -132,20 +132,124 @@ export function lerp(start, end, t) {
 }
 
 /**
- * Check if device supports haptic feedback
- * @returns {boolean} True if haptic feedback is supported
+ * Check if device supports standard vibration API
+ * @returns {boolean} True if standard vibration is supported
  */
-export function supportsHaptics() {
-    return 'vibrate' in navigator;
+export function supportsStandardVibration() {
+    return 'vibrate' in navigator && typeof navigator.vibrate === 'function';
 }
 
 /**
- * Trigger haptic feedback if supported
- * @param {number|Array} pattern - Vibration pattern (duration or array of durations)
+ * Check if device supports iOS checkbox switch haptic workaround
+ * @returns {boolean} True if iOS haptic workaround is supported
  */
-export function triggerHaptic(pattern = 10) {
-    if (supportsHaptics()) {
-        navigator.vibrate(pattern);
+export function supportsiOSHaptic() {
+    // Check for iOS Safari and switch input support
+    const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (!isIOSSafari) return false;
+    
+    // Feature detection for checkbox switch support (Safari 17.4+)
+    try {
+        const testInput = document.createElement('input');
+        testInput.type = 'checkbox';
+        testInput.setAttribute('switch', '');
+        return testInput.hasAttribute('switch');
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Trigger iOS haptic feedback using checkbox switch workaround
+ * Based on Safari 18+ checkbox switch haptic feedback feature
+ */
+function triggerIOSHaptic() {
+    try {
+        // Create temporary hidden label element
+        const labelEl = document.createElement('label');
+        labelEl.ariaHidden = 'true';
+        labelEl.style.display = 'none';
+        
+        // Create checkbox input with switch attribute
+        const inputEl = document.createElement('input');
+        inputEl.type = 'checkbox';
+        inputEl.setAttribute('switch', '');
+        
+        // Assemble and add to DOM
+        labelEl.appendChild(inputEl);
+        document.head.appendChild(labelEl);
+        
+        // Trigger haptic by clicking label
+        labelEl.click();
+        
+        // Clean up immediately
+        document.head.removeChild(labelEl);
+        
+        return true;
+    } catch (error) {
+        // Silent fail - don't log to avoid console spam
+        return false;
+    }
+}
+
+/**
+ * Check if device supports any form of haptic feedback
+ * @returns {boolean} True if any haptic feedback method is supported
+ */
+export function supportsHaptics() {
+    return supportsStandardVibration() || supportsiOSHaptic();
+}
+
+/**
+ * Trigger haptic feedback using the best available method
+ * @param {number|Array} pattern - Vibration pattern (duration or array of durations)
+ * @param {string} type - Haptic type: 'basic', 'confirm', 'error' (default: 'basic')
+ */
+export function triggerHaptic(pattern = 10, type = 'basic') {
+    try {
+        // Tier 1: Standard vibration API (Android, some browsers)
+        if (supportsStandardVibration()) {
+            // Handle different haptic types with vibration patterns
+            switch (type) {
+                case 'confirm':
+                    navigator.vibrate([50, 70, 50]);
+                    break;
+                case 'error':
+                    navigator.vibrate([50, 70, 50, 70, 50]);
+                    break;
+                case 'basic':
+                default:
+                    navigator.vibrate(pattern);
+                    break;
+            }
+            return;
+        }
+        
+        // Tier 2: iOS checkbox switch workaround (Safari 18+)
+        if (supportsiOSHaptic()) {
+            // For iOS, use multiple haptics with timing for different types
+            switch (type) {
+                case 'confirm':
+                    triggerIOSHaptic();
+                    setTimeout(() => triggerIOSHaptic(), 120);
+                    break;
+                case 'error':
+                    triggerIOSHaptic();
+                    setTimeout(() => triggerIOSHaptic(), 120);
+                    setTimeout(() => triggerIOSHaptic(), 240);
+                    break;
+                case 'basic':
+                default:
+                    triggerIOSHaptic();
+                    break;
+            }
+            return;
+        }
+        
+        // Tier 3: Graceful degradation (no haptic feedback available)
+        
+    } catch (error) {
+        // Silent fail - haptic feedback is enhancement, not critical
     }
 }
 
