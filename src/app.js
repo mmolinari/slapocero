@@ -19,8 +19,16 @@ class SlapocerobankGame {
         this.gameStatus = null;
         this.hitCounter = null;
 
+        // Loading screen elements
+        this.loadingScreen = null;
+        this.progressFill = null;
+        this.progressText = null;
+        this.loadingStatus = null;
+
         // Game state
         this.isInitialized = false;
+        this.totalAssets = 26; // 12 images + 14 audio files
+        this.loadedAssets = 0;
         this.gameStartTime = null;
         this.stats = {
             hits: 0,
@@ -78,6 +86,9 @@ class SlapocerobankGame {
             // Get DOM elements
             this.getDOMElements();
 
+            // Show loading screen
+            this.showLoader();
+
             // Preload assets
             await this.preloadAssets();
 
@@ -93,11 +104,15 @@ class SlapocerobankGame {
             // Start the game
             this.startGame();
 
+            // Hide loading screen
+            await this.hideLoader();
+
             this.isInitialized = true;
             console.log('Slapocero game initialized successfully');
 
         } catch (error) {
             console.error('Failed to initialize game:', error);
+            await this.hideLoader();
             this.showError('Failed to load game. Please refresh the page.');
         }
     }
@@ -111,8 +126,14 @@ class SlapocerobankGame {
         this.muteToggle = document.getElementById('muteToggle');
         this.gameStatus = document.getElementById('gameStatus');
         this.hitCounter = document.getElementById('hitCounter');
+        
+        // Loading screen elements
+        this.loadingScreen = document.getElementById('loadingScreen');
+        this.progressFill = document.getElementById('progressFill');
+        this.progressText = document.getElementById('progressText');
+        this.loadingStatus = document.getElementById('loadingStatus');
 
-        if (!this.warthogSprite || !this.warthogContainer) {
+        if (!this.warthogSprite || !this.warthogContainer || !this.loadingScreen) {
             throw new Error('Required DOM elements not found');
         }
     }
@@ -123,11 +144,17 @@ class SlapocerobankGame {
     async preloadAssets() {
         console.log('Preloading assets...');
 
+        // Reset loading progress
+        this.loadedAssets = 0;
+
         // Preload images
         await this.preloadImages();
 
         // Preload audio files (silently, without playing)
         await this.preloadAudio();
+
+        // Ensure we reach 100% and show completion status
+        this.updateProgress(100, 'Loading complete!');
 
         console.log('Assets preloaded successfully');
     }
@@ -136,18 +163,23 @@ class SlapocerobankGame {
      * Preload sprite images
      */
     async preloadImages() {
+        this.updateProgress(0, 'Loading images...');
+        
         const imagePromises = [];
+        const imagePaths = [];
 
         // Preload idle images (1-6)
         for (let i = 1; i <= 6; i++) {
             const path = `assets/img/slapocero_idle_${i.toString().padStart(2, '0')}.jpeg`;
-            imagePromises.push(this.loadImage(path));
+            imagePaths.push(path);
+            imagePromises.push(this.loadImageWithProgress(path, i));
         }
 
         // Preload hit images (7-12)
         for (let i = 7; i <= 12; i++) {
             const path = `assets/img/slapocero_hit_${i.toString().padStart(2, '0')}.jpeg`;
-            imagePromises.push(this.loadImage(path));
+            imagePaths.push(path);
+            imagePromises.push(this.loadImageWithProgress(path, i + 6));
         }
 
         const loadedImages = await Promise.allSettled(imagePromises);
@@ -185,11 +217,31 @@ class SlapocerobankGame {
     }
 
     /**
+     * Load a single image with progress tracking
+     */
+    loadImageWithProgress(path, imageIndex) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                this.incrementAssetProgress('image');
+                resolve(path);
+            };
+            img.onerror = () => {
+                // Still increment progress even on error to prevent getting stuck
+                this.incrementAssetProgress('image (failed)');
+                reject(new Error(`Failed to load image: ${path}`));
+            };
+            img.src = path;
+        });
+    }
+
+    /**
      * Preload audio files without initializing the audio context
      * This ensures audio files are cached and ready for playback
      */
     async preloadAudio() {
         try {
+            this.updateProgress(46, 'Loading audio...');
             console.log('Preloading audio assets...');
             
             // Define all audio assets that should be preloaded
@@ -211,19 +263,22 @@ class SlapocerobankGame {
             ];
 
             // Use fetch to preload audio files (they'll be cached by browser)
-            const preloadPromises = audioAssets.map(async (audioPath) => {
+            const preloadPromises = audioAssets.map(async (audioPath, index) => {
                 try {
                     const response = await fetch(audioPath);
                     if (response.ok) {
                         // Consume the response to ensure it's cached
                         await response.blob();
+                        this.incrementAssetProgress('audio');
                         console.log(`Preloaded audio: ${audioPath}`);
                         return { success: true, path: audioPath };
                     } else {
+                        this.incrementAssetProgress('audio (failed)');
                         console.warn(`Failed to preload audio: ${audioPath} (${response.status})`);
                         return { success: false, path: audioPath, error: `HTTP ${response.status}` };
                     }
                 } catch (error) {
+                    this.incrementAssetProgress('audio (failed)');
                     console.warn(`Failed to preload audio: ${audioPath}`, error);
                     return { success: false, path: audioPath, error: error.message };
                 }
@@ -586,6 +641,74 @@ class SlapocerobankGame {
                 errorDiv.parentNode.removeChild(errorDiv);
             }
         }, 5000);
+    }
+
+    /**
+     * Show loading screen
+     */
+    showLoader() {
+        if (!this.loadingScreen) return;
+        
+        this.loadingScreen.classList.remove('hidden');
+        this.updateProgress(0, 'Initializing...');
+        console.log('Loading screen shown');
+    }
+
+    /**
+     * Hide loading screen
+     */
+    async hideLoader() {
+        if (!this.loadingScreen) return;
+        
+        return new Promise((resolve) => {
+            this.loadingScreen.classList.add('hidden');
+            // Wait for fade out transition to complete
+            setTimeout(() => {
+                console.log('Loading screen hidden');
+                resolve();
+            }, 300);
+        });
+    }
+
+    /**
+     * Update loading progress
+     */
+    updateProgress(percentage, status = '') {
+        if (!this.progressFill || !this.progressText) return;
+        
+        // Update progress bar
+        this.progressFill.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        
+        // Update percentage text
+        this.progressText.textContent = `${Math.round(percentage)}%`;
+        
+        // Update status text if provided
+        if (status && this.loadingStatus) {
+            this.loadingStatus.textContent = status;
+        }
+    }
+
+    /**
+     * Increment asset loading progress
+     */
+    incrementAssetProgress(assetType = '') {
+        this.loadedAssets++;
+        const percentage = (this.loadedAssets / this.totalAssets) * 100;
+        
+        // Determine status message based on progress
+        let status = 'Loading...';
+        if (this.loadedAssets <= 12) {
+            status = `Loading images... (${this.loadedAssets}/12)`;
+        } else {
+            const audioLoaded = this.loadedAssets - 12;
+            status = `Loading audio... (${audioLoaded}/14)`;
+        }
+        
+        this.updateProgress(percentage, status);
+        
+        if (assetType) {
+            console.log(`Loaded ${assetType}: ${this.loadedAssets}/${this.totalAssets} (${Math.round(percentage)}%)`);
+        }
     }
 
     /**
