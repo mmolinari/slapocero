@@ -126,7 +126,7 @@ class SlapocerobankGame {
         this.muteToggle = document.getElementById('muteToggle');
         this.gameStatus = document.getElementById('gameStatus');
         this.hitCounter = document.getElementById('hitCounter');
-        
+
         // Loading screen elements
         this.loadingScreen = document.getElementById('loadingScreen');
         this.progressFill = document.getElementById('progressFill');
@@ -164,7 +164,7 @@ class SlapocerobankGame {
      */
     async preloadImages() {
         this.updateProgress(0, 'Loading images...');
-        
+
         const imagePromises = [];
         const imagePaths = [];
 
@@ -243,7 +243,7 @@ class SlapocerobankGame {
         try {
             this.updateProgress(46, 'Loading audio...');
             console.log('Preloading audio assets...');
-            
+
             // Define all audio assets that should be preloaded
             const audioAssets = [
                 'assets/audio/grunt_idle_01.mp3',
@@ -287,9 +287,9 @@ class SlapocerobankGame {
             const results = await Promise.allSettled(preloadPromises);
             const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
             const total = audioAssets.length;
-            
+
             console.log(`Audio preloading complete: ${successful}/${total} files cached`);
-            
+
         } catch (error) {
             console.warn('Audio preloading failed:', error);
         }
@@ -571,7 +571,7 @@ class SlapocerobankGame {
      */
     triggerHitFeedback() {
         // Haptic feedback
-        triggerHaptic([10]);
+        triggerHaptic([10, 200]);
 
         // Add temporary visual effect to container
         this.warthogContainer.style.transform = 'scale(0.98)';
@@ -648,7 +648,7 @@ class SlapocerobankGame {
      */
     showLoader() {
         if (!this.loadingScreen) return;
-        
+
         this.loadingScreen.classList.remove('hidden');
         this.updateProgress(0, 'Initializing...');
         console.log('Loading screen shown');
@@ -659,7 +659,7 @@ class SlapocerobankGame {
      */
     async hideLoader() {
         if (!this.loadingScreen) return;
-        
+
         return new Promise((resolve) => {
             this.loadingScreen.classList.add('hidden');
             // Wait for fade out transition to complete
@@ -675,13 +675,13 @@ class SlapocerobankGame {
      */
     updateProgress(percentage, status = '') {
         if (!this.progressFill || !this.progressText) return;
-        
+
         // Update progress bar
         this.progressFill.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
-        
+
         // Update percentage text
         this.progressText.textContent = `${Math.round(percentage)}%`;
-        
+
         // Update status text if provided
         if (status && this.loadingStatus) {
             this.loadingStatus.textContent = status;
@@ -694,7 +694,7 @@ class SlapocerobankGame {
     incrementAssetProgress(assetType = '') {
         this.loadedAssets++;
         const percentage = (this.loadedAssets / this.totalAssets) * 100;
-        
+
         // Determine status message based on progress
         let status = 'Loading...';
         if (this.loadedAssets <= 12) {
@@ -703,9 +703,9 @@ class SlapocerobankGame {
             const audioLoaded = this.loadedAssets - 12;
             status = `Loading audio... (${audioLoaded}/14)`;
         }
-        
+
         this.updateProgress(percentage, status);
-        
+
         if (assetType) {
             console.log(`Loaded ${assetType}: ${this.loadedAssets}/${this.totalAssets} (${Math.round(percentage)}%)`);
         }
